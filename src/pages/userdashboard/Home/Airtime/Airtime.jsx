@@ -433,11 +433,6 @@ const Airtime = () => {
                 <span className="confirm-value">{keyword}</span>
               </div>
 
-              <div className="confirm-row">
-                <span className="confirm-label">Transaction fee</span>
-                <span className="confirm-value">₦0.00</span>
-              </div>
-
               <div className="confirm-row total-row">
                 <span className="confirm-label">Total</span>
                 <span className="confirm-value">
