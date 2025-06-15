@@ -69,7 +69,7 @@ const MainRoutes = () => {
           <Route path="/register" element={<LoginSignup />} />
           <Route path="/login" element={<LoginSignup />} />
 
-          {/* Dashboard routes - Nested approach */}
+          {/* Dashboard routes - using Nested approach */}
           <Route path="/userdashboard" element={<DashboardLayout />}>
             <Route index element={<UserDashboard />} />
             <Route path="home" element={<UserDashboard />} />
