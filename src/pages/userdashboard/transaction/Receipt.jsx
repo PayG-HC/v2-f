@@ -92,6 +92,37 @@ const Receipt = ({ transaction, onBack }) => {
     return parseFloat(amount || 0);
   };
 
+  // Get the percentage amount as a number for the personal account display
+  const getPercentageAmountValue = () => {
+    // First check if percentageAmount exists in transaction data
+    if (transaction.percentageAmount != null && transaction.percentageAmount !== 0) {
+      return parseFloat(transaction.percentageAmount);
+    }
+    
+    // Fallback to calculation if server data not available
+    const percentageValue = transaction.percentage;
+    let amountValue = transaction.amount;
+    
+    // Handle amount conversion - remove currency symbols and parse
+    if (typeof amountValue === 'string') {
+      amountValue = amountValue.replace(/[₦,]/g, '');
+    }
+    
+    // Check if both values exist and are valid
+    if (percentageValue == null || percentageValue === '' || amountValue == null) {
+      return 0;
+    }
+    
+    const numericPercentage = parseFloat(percentageValue);
+    const numericAmount = parseFloat(amountValue);
+    
+    if (isNaN(numericPercentage) || isNaN(numericAmount) || numericPercentage === 0) {
+      return 0;
+    }
+    
+    return (numericAmount * numericPercentage) / 100;
+  };
+
   return (
     <div className="receipt-container">
       <div className="receipt-header">
@@ -100,7 +131,7 @@ const Receipt = ({ transaction, onBack }) => {
           <span>Receipt</span>
         </button>
       </div>
-
+      
       <div className="receipt-content">
         <div className="receipt-amount-section">
           <p className="amount-label">Amount</p>
@@ -109,7 +140,7 @@ const Receipt = ({ transaction, onBack }) => {
 
         <div className="receipt-details">
           <div className="detail-row">
-            <span className="detail-label">Purchase Method</span>
+            <span className="detail-label">Payment Method</span>
             <span className="detail-value">{serviceDetails.service}</span>
           </div>
 
@@ -143,11 +174,6 @@ const Receipt = ({ transaction, onBack }) => {
             <span className="detail-value">{serviceDetails.keyword}</span>
           </div>
 
-          <div className="detail-row">
-            <span className="detail-label">Transaction fee</span>
-            <span className="detail-value">₦0.00</span>
-          </div>
-
           <div className="detail-row total-row">
             <span className="detail-label">Total</span>
             <span className="detail-value">{formatAmount(getCleanAmount())}</span>
@@ -164,7 +190,7 @@ const Receipt = ({ transaction, onBack }) => {
             <span className="account-label">Into</span>
             <div className="account-details">
               <span className="account-type">Personal Accnt.</span>
-              <span className="account-balance">{formatAmount(getCleanAmount())}</span>
+              <span className="account-balance">{formatAmount(getPercentageAmountValue())}</span>
             </div>
           </div>
         </div>

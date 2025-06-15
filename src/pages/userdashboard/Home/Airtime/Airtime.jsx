@@ -393,7 +393,7 @@ const Airtime = () => {
 
             <div className="modal-body">
               <div className="confirm-row">
-                <span className="confirm-label">Purchase Method</span>
+                <span className="confirm-label">Payment Method</span>
                 <span className="confirm-value">Airtime</span>
               </div>
 
@@ -431,11 +431,6 @@ const Airtime = () => {
               <div className="confirm-row">
                 <span className="confirm-label">Keyword</span>
                 <span className="confirm-value">{keyword}</span>
-              </div>
-
-              <div className="confirm-row">
-                <span className="confirm-label">Transaction fee</span>
-                <span className="confirm-value">₦0.00</span>
               </div>
 
               <div className="confirm-row total-row">

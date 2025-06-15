@@ -17,6 +17,99 @@
   margin: 0;
 }
 
+/* Balance Card Styles */
+.balance-card {
+  background: linear-gradient(135deg, #075c40 0%, #097f58 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Balance Card that aligns with search and extends to full width */
+.balance-card-aligned {
+  background: linear-gradient(135deg, #075c40 0%, #097f58 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(30px, -30px);
+}
+
+.balance-card-aligned::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(30px, -30px);
+}
+
+.balance-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.balance-info {
+  flex: 1;
+  color: white;
+}
+
+.balance-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.balance-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+
+.balance-description {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-weight: 400;
+}
+
 .transaction-tabs {
   display: flex;
   margin-bottom: 32px;
@@ -196,6 +289,24 @@
   color: #92400e;
 }
 
+.no-transactions {
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.loading-container {
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.error-container {
+  padding: 48px 24px;
+  text-align: center;
+  color: #dc2626;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .transaction-page {
@@ -204,6 +315,24 @@
   
   .transaction-header h1 {
     font-size: 24px;
+  }
+
+  .balance-card {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .balance-card-aligned {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .balance-amount {
+    font-size: 24px;
+  }
+
+  .balance-description {
+    font-size: 12px;
   }
   
   .search-container {
@@ -244,6 +373,24 @@
 }
 
 @media (max-width: 480px) {
+  .balance-card {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .balance-card-aligned {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .balance-amount {
+    font-size: 22px;
+  }
+  
   .tab-button {
     padding: 8px 16px;
     font-size: 14px;
@@ -292,9 +439,4 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-
-/* Ensure the transaction page doesn't scroll when modal is open */
-body.modal-open {
-  overflow: hidden;
 }

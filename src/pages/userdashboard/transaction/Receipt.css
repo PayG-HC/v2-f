@@ -38,7 +38,7 @@
 .amount-label {
   color: #6b7280;
   font-size: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 }
 
 .receipt-amount {
@@ -92,7 +92,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .detail-label {

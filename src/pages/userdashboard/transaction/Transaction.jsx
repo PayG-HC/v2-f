@@ -1,45 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { Smartphone, CreditCard, Send } from 'lucide-react';
-import Receipt from './Receipt';
-import './Transaction.css';
+import React, { useState, useEffect } from "react";
+import { Smartphone, CreditCard, Send, Wallet } from "lucide-react";
+import Receipt from "./Receipt";
+import "./Transaction.css";
 
 const Transaction = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [showReceipt, setShowReceipt] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalBalance, setTotalBalance] = useState(0);
 
   // Fetch airtime purchase history from backend
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const token = localStorage.getItem('token'); 
-        
-        const response = await fetch('http://localhost:8080/api/airtime/airtime-history', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "https://paygbackend.onrender.com/api/airtime/airtime-history",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch transaction history');
+          throw new Error("Failed to fetch transaction history");
         }
 
         const data = await response.json();
-        
+
         // Transform the backend data to match the frontend structure
         const transformedTransactions = data.data.map((transaction, index) => ({
-          id: index + 1, 
-          type: 'airtime', 
-          title: 'Airtime Payment',
+          id: index + 1,
+          type: "airtime",
+          title: "Airtime Payment",
           date: formatDate(transaction.createdAt),
           amount: `₦${transaction.amountDeducted.toFixed(2)}`,
-          status: transaction.status === 'pending' ? 'Pending' : 
-                  transaction.status === 'completed' ? 'Success' : 'Failed',
+          status:
+            transaction.status === "pending"
+              ? "Pending"
+              : transaction.status === "completed"
+              ? "Success"
+              : "Failed",
           // Additional fields for receipt
           phoneNumber: transaction.phoneNumber,
           network: transaction.network,
@@ -48,15 +56,23 @@ const Transaction = () => {
           amountDeducted: transaction.amountDeducted,
           // Include percentage data from backend
           percentage: transaction.percentage,
-          percentageAmount: transaction.percentageAmount
+          percentageAmount: transaction.percentageAmount,
         }));
 
         setTransactions(transformedTransactions);
+
+        // Calculate total balance from all percentage amounts
+        const totalPercentageAmount = data.data.reduce((sum, transaction) => {
+          const percentageAmount = transaction.percentageAmount || 0;
+          return sum + parseFloat(percentageAmount);
+        }, 0);
+
+        setTotalBalance(totalPercentageAmount);
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
-        console.error('Error fetching transactions:', err);
+        console.error("Error fetching transactions:", err);
       }
     };
 
@@ -66,54 +82,73 @@ const Transaction = () => {
   // Format date to match the required format: "Jan 11th, 2024 16:42PM"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    
+
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
-    
+
     const month = months[date.getMonth()];
     const day = date.getDate();
     const year = date.getFullYear();
-    
+
     // Add ordinal suffix to day
     const getOrdinalSuffix = (day) => {
-      if (day > 3 && day < 21) return 'th';
+      if (day > 3 && day < 21) return "th";
       switch (day % 10) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
       }
     };
-    
+
     const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
-    
+
     // Format time
     let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    
+
     return `${month} ${dayWithSuffix}, ${year} ${hours}:${minutes}${ampm}`;
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return `₦${parseFloat(amount || 0).toFixed(2)}`;
   };
 
   const getTransactionIcon = (type) => {
     switch (type) {
-      case 'airtime':
+      case "airtime":
         return (
           <div className="transaction-icon airtime-icon">
             <Smartphone size={20} />
           </div>
         );
-      case 'transfer':
+      case "transfer":
         return (
           <div className="transaction-icon transfer-icon">
             <Send size={20} />
           </div>
         );
-      case 'card':
+      case "card":
         return (
           <div className="transaction-icon card">
             <CreditCard size={20} />
@@ -130,7 +165,7 @@ const Transaction = () => {
 
   const handleTransactionClick = (transaction) => {
     // Debug log to see the transaction data being passed
-    console.log('Transaction clicked:', transaction);
+    console.log("Transaction clicked:", transaction);
     setSelectedTransaction(transaction);
     setShowReceipt(true);
   };
@@ -147,10 +182,13 @@ const Transaction = () => {
     }
   };
 
-  const filteredTransactions = transactions.filter(transaction =>
-    transaction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    transaction.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    transaction.network?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTransactions = transactions.filter(
+    (transaction) =>
+      transaction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.phoneNumber
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      transaction.network?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Loading state
@@ -188,10 +226,34 @@ const Transaction = () => {
         <h1>Transactions</h1>
       </div>
 
+      {/* Balance Display */}
+      <div className="balance-card-aligned">
+        <div className="balance-icon">
+          <Wallet size={24} />
+        </div>
+        <div className="balance-info">
+          <p className="balance-label">Total Payment</p>
+          <h2 className="balance-amount">{formatCurrency(totalBalance)}</h2>
+          <p className="balance-description">
+            Total percentage amount earned from {transactions.length}{" "}
+            transaction{transactions.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+      </div>
+
       <div className="search-container">
         <div className="search-input-wrapper">
-          <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+          <svg
+            className="search-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+              fill="currentColor"
+            />
           </svg>
           <input
             type="text"
@@ -203,7 +265,10 @@ const Transaction = () => {
         </div>
         <button className="filter-button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" fill="currentColor"/>
+            <path
+              d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"
+              fill="currentColor"
+            />
           </svg>
         </button>
       </div>
@@ -215,11 +280,11 @@ const Transaction = () => {
           </div>
         ) : (
           filteredTransactions.map((transaction) => (
-            <div 
-              key={transaction.id} 
+            <div
+              key={transaction.id}
               className="transaction-item"
               onClick={() => handleTransactionClick(transaction)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               {getTransactionIcon(transaction.type)}
               <div className="transaction-details">
@@ -243,7 +308,7 @@ const Transaction = () => {
       {showReceipt && (
         <div className="modal-overlay" onClick={handleOverlayClick}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <Receipt 
+            <Receipt
               transaction={selectedTransaction}
               onBack={handleBackToTransactions}
             />
