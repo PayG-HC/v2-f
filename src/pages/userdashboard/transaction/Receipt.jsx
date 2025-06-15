@@ -143,11 +143,6 @@ const Receipt = ({ transaction, onBack }) => {
             <span className="detail-value">{serviceDetails.keyword}</span>
           </div>
 
-          <div className="detail-row">
-            <span className="detail-label">Transaction fee</span>
-            <span className="detail-value">₦0.00</span>
-          </div>
-
           <div className="detail-row total-row">
             <span className="detail-label">Total</span>
             <span className="detail-value">{formatAmount(getCleanAmount())}</span>
