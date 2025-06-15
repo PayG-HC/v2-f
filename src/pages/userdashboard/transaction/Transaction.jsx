@@ -16,20 +16,6 @@ const Transaction = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-<<<<<<< HEAD
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          "https://paygbackend.onrender.com/api/airtime/airtime-history",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-=======
         const token = localStorage.getItem('token'); 
         
         const response = await fetch('https://paygbackend.onrender.com/api/airtime/airtime-history', {
@@ -39,7 +25,6 @@ const Transaction = () => {
             'Content-Type': 'application/json',
           },
         });
->>>>>>> 1b8c354974a08a7254482425e00147abd7f33f55
 
         if (!response.ok) {
           throw new Error("Failed to fetch transaction history");
