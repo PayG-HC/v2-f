@@ -231,10 +231,6 @@ const Transaction = () => {
         <div className="balance-info">
           <p className="balance-label">Total Payment</p>
           <h2 className="balance-amount">{formatCurrency(totalBalance)}</h2>
-          <p className="balance-description">
-            Total percentage amount earned from {transactions.length}{" "}
-            transaction{transactions.length !== 1 ? "s" : ""}
-          </p>
         </div>
       </div>
 
