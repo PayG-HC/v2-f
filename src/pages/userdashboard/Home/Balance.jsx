@@ -33,7 +33,7 @@ const Balance = () => {
         console.log('Fetching package balance for:', { email: userEmail });
 
         // Fetch package balance
-        const packageBalanceRes = await axios.get(`https://paygbackend.onrender.com/api/package-balance?email=${userEmail}`);
+        const packageBalanceRes = await axios.get(`https://v2-b.onrender.com/api/package-balance?email=${userEmail}`);
 
         console.log('Package balance response:', packageBalanceRes.data);
         

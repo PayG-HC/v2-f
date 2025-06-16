@@ -88,7 +88,7 @@ const Airtime = () => {
 
       // Use the correct server port (8080) and API path
       const getApiUrl = () => {
-        const baseUrl = "https://paygbackend.onrender.com";
+        const baseUrl = "https://v2-b.onrender.com";
         return `${baseUrl}/api/airtime/subscribe`;
       };
 

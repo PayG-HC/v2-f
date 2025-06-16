@@ -111,7 +111,7 @@ function LoginSignup() {
     
     try {
       const response = await axios.post(
-        "https://paygbackend.onrender.com/api/auth/login",
+        "https://v2-b.onrender.com/api/auth/login",
         loginData
       );
 
@@ -165,7 +165,7 @@ function LoginSignup() {
 
     try {
       const response = await axios.post(
-        "https://paygbackend.onrender.com/api/auth/register",
+        "https://v2-b.onrender.com/api/auth/register",
         registrationData,
         {
           headers: {

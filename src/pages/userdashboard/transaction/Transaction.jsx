@@ -18,7 +18,7 @@ const Transaction = () => {
       try {
         const token = localStorage.getItem('token'); 
         
-        const response = await fetch('https://paygbackend.onrender.com/api/airtime/airtime-history', {
+        const response = await fetch('https://v2-b.onrender.com/api/airtime/airtime-history', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
